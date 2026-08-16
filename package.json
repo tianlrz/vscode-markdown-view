@@ -1,16 +1,37 @@
 {
-  "name": "mdview",
+  "name": "markdown-view",
   "displayName": "Markdown View",
-  "description": "Single-pane rendered Markdown reading view, themed by the editor. No telemetry, no upsell.",
+  "description": "Read Markdown in a single pane — the file tab itself renders, instead of opening a second preview panel. Follows your editor theme.",
   "version": "0.1.0",
-  "publisher": "local",
+  "publisher": "tianlrz",
   "license": "MIT",
+  "icon": "icon.png",
+  "galleryBanner": {
+    "color": "#22272E",
+    "theme": "dark"
+  },
   "engines": {
     "vscode": "^1.96.0"
   },
   "categories": [
+    "Visualization",
     "Other"
   ],
+  "keywords": [
+    "markdown",
+    "preview",
+    "viewer",
+    "reader",
+    "custom editor"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tianlrz/vscode-markdown-view.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tianlrz/vscode-markdown-view/issues"
+  },
+  "homepage": "https://github.com/tianlrz/vscode-markdown-view#readme",
   "main": "./out/extension.js",
   "type": "commonjs",
   "contributes": {
@@ -57,13 +78,16 @@
     }
   },
   "scripts": {
-    "build": "esbuild src/extension.js --bundle --platform=node --target=node18 --external:vscode --format=cjs --minify --outfile=out/extension.js"
+    "build": "esbuild src/extension.js --bundle --platform=node --target=node18 --external:vscode --format=cjs --minify --outfile=out/extension.js",
+    "package": "vsce package --no-dependencies"
   },
   "dependencies": {
     "highlight.js": "^11.12.0",
     "markdown-it": "^15.0.0"
   },
   "devDependencies": {
-    "esbuild": "^0.28.2"
+    "@vscode/vsce": "^3.3.2",
+    "esbuild": "^0.28.2",
+    "ovsx": "^0.10.1"
   }
 }

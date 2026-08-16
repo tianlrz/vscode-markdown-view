@@ -1,0 +1,49 @@
+name: Release
+
+# Tag a commit to ship it:  git tag v0.1.0 && git push origin v0.1.0
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    # Secrets are lifted to job env because the `secrets` context is not
+    # available in a step-level `if:` — only `env` is.
+    env:
+      VSCE_PAT: ${{ secrets.VSCE_PAT }}
+      OVSX_PAT: ${{ secrets.OVSX_PAT }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - name: Package vsix
+        run: npx vsce package --no-dependencies --out markdown-view.vsix
+
+      - name: Attach vsix to the GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: markdown-view.vsix
+          generate_release_notes: true
+
+      # Each publish is skipped rather than failed when its token is absent,
+      # so shipping to one marketplace does not require setting up both.
+      - name: Publish to Visual Studio Marketplace
+        if: env.VSCE_PAT != ''
+        run: npx vsce publish --no-dependencies --packagePath markdown-view.vsix
+
+      - name: Publish to Open VSX
+        if: env.OVSX_PAT != ''
+        run: npx ovsx publish markdown-view.vsix
