@@ -1,0 +1,69 @@
+{
+  "name": "mdview",
+  "displayName": "Markdown View",
+  "description": "Single-pane rendered Markdown reading view, themed by the editor. No telemetry, no upsell.",
+  "version": "0.1.0",
+  "publisher": "local",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.96.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./out/extension.js",
+  "type": "commonjs",
+  "contributes": {
+    "customEditors": [
+      {
+        "viewType": "mdview.editor",
+        "displayName": "Markdown View",
+        "priority": "default",
+        "selector": [
+          { "filenamePattern": "*.md" },
+          { "filenamePattern": "*.markdown" }
+        ]
+      }
+    ],
+    "commands": [
+      {
+        "command": "mdview.openSource",
+        "title": "Markdown View: Edit Source",
+        "icon": "$(code)"
+      },
+      {
+        "command": "mdview.openPreview",
+        "title": "Markdown View: Open Rendered View",
+        "icon": "$(book)"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        { "command": "mdview.openSource", "when": "activeCustomEditorId == mdview.editor" },
+        { "command": "mdview.openPreview", "when": "editorLangId == markdown" }
+      ],
+      "editor/title": [
+        {
+          "command": "mdview.openSource",
+          "when": "activeCustomEditorId == mdview.editor",
+          "group": "navigation"
+        },
+        {
+          "command": "mdview.openPreview",
+          "when": "editorLangId == markdown",
+          "group": "navigation"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "build": "esbuild src/extension.js --bundle --platform=node --target=node18 --external:vscode --format=cjs --minify --outfile=out/extension.js"
+  },
+  "dependencies": {
+    "highlight.js": "^11.12.0",
+    "markdown-it": "^15.0.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  }
+}
