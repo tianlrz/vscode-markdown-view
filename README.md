@@ -12,15 +12,21 @@ Markdown the same treatment.
 
 - **Single pane.** Registers a custom editor for `*.md` and `*.markdown` at `default`
   priority, so opening a Markdown file lands straight in the rendered view.
+- **Outline sidebar.** A sticky table of contents with scroll-spy highlighting the section
+  you are in. VS Code's built-in Outline view follows the *active text editor*, so it is
+  always empty for a custom editor — the outline has to live inside the view.
 - **Follows your theme.** Every colour comes from VS Code CSS variables, so a dark editor
   gets a dark document. Nothing is hardcoded to a light background.
 - **Live re-render** while you edit the source side by side, debounced, and it keeps your
   scroll position across updates.
-- Syntax-highlighted code blocks, tables, relative-path images, and heading anchors that
-  work with non-ASCII headings.
+- **Find in document** with `Cmd/Ctrl+F`, `Enter` / `Shift+Enter` to step through matches.
+- **Copy button** on every code block.
+- Syntax-highlighted code blocks, tables, task list checkboxes, YAML front matter rendered
+  as a metadata block, relative-path images, and heading anchors that work with non-ASCII
+  headings (duplicate headings get suffixed ids, so the outline never mis-navigates).
 - Links behave: external ones open in the browser, relative `.md` links open in the
   editor, `#anchors` scroll in place.
-- No telemetry, no network access at runtime, no paid tier. ~290 KB installed.
+- No telemetry, no network access at runtime, no paid tier. ~300 KB installed.
 
 ## What it deliberately does not do
 

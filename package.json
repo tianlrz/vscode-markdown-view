@@ -1,8 +1,8 @@
 {
   "name": "markdown-view",
   "displayName": "Markdown View",
-  "description": "Read Markdown in a single pane — the file tab itself renders, instead of opening a second preview panel. Follows your editor theme.",
-  "version": "0.1.0",
+  "description": "Read Markdown in a single pane with an outline sidebar — the file tab itself renders, instead of opening a second preview panel. Follows your editor theme.",
+  "version": "0.2.0",
   "publisher": "tianlrz",
   "license": "MIT",
   "icon": "icon.png",
@@ -41,8 +41,12 @@
         "displayName": "Markdown View",
         "priority": "default",
         "selector": [
-          { "filenamePattern": "*.md" },
-          { "filenamePattern": "*.markdown" }
+          {
+            "filenamePattern": "*.md"
+          },
+          {
+            "filenamePattern": "*.markdown"
+          }
         ]
       }
     ],
@@ -60,8 +64,14 @@
     ],
     "menus": {
       "commandPalette": [
-        { "command": "mdview.openSource", "when": "activeCustomEditorId == mdview.editor" },
-        { "command": "mdview.openPreview", "when": "editorLangId == markdown" }
+        {
+          "command": "mdview.openSource",
+          "when": "activeCustomEditorId == mdview.editor"
+        },
+        {
+          "command": "mdview.openPreview",
+          "when": "editorLangId == markdown"
+        }
       ],
       "editor/title": [
         {
