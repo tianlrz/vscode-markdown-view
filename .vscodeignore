@@ -1,4 +1,8 @@
 node_modules/
 src/
 .vscode/
+.github/
+.gitignore
+.vscodeignore
+package-lock.json
 *.vsix
