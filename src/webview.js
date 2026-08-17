@@ -141,7 +141,9 @@ let headings = [];
 /* ------------------------------------------------------------- rendering */
 
 function buildToc(toc) {
-  if (toc.length < 2) { tocEl.classList.add("hidden"); return; }
+  // Hide only when there is genuinely nothing to show. A threshold higher than
+  // this makes the outline look broken on short documents.
+  if (!toc.length) { tocEl.classList.add("hidden"); return; }
   tocEl.classList.remove("hidden");
   tocEl.innerHTML =
     '<div class="toc-title">Outline</div>' +
@@ -185,7 +187,13 @@ function apply(msg) {
 }
 
 window.addEventListener("message", (e) => {
-  if (e.data && e.data.type === "render") apply(e.data);
+  const msg = e.data;
+  if (!msg) return;
+  if (msg.type === "render") apply(msg);
+  if (msg.type === "reveal") {
+    const el = document.getElementById(msg.id);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 });
 
 /* ------------------------------------------------------------ scroll spy */

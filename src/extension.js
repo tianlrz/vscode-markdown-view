@@ -1,6 +1,7 @@
 const vscode = require("vscode");
 const { createRenderer, render } = require("./render");
 const { page } = require("./webview");
+const { OutlineTree } = require("./outline");
 
 const VIEW_TYPE = "mdview.editor";
 
@@ -9,6 +10,10 @@ function dirOf(uri) {
 }
 
 class MdViewProvider {
+  constructor(outline) {
+    this.outline = outline;
+  }
+
   resolveCustomTextEditor(document, panel) {
     const webview = panel.webview;
     const base = dirOf(document.uri);
@@ -26,9 +31,12 @@ class MdViewProvider {
     const nonce = String(Math.random()).slice(2);
     webview.html = page(nonce, webview.cspSource);
 
+    let toc = [];
     const push = () => {
-      const { html, toc } = render(md, document.getText());
-      webview.postMessage({ type: "render", html, toc });
+      const out = render(md, document.getText());
+      toc = out.toc;
+      webview.postMessage({ type: "render", html: out.html, toc });
+      if (panel.active) this.outline.setActive({ uri: document.uri, toc, panel });
     };
 
     // Debounced so fast typing in a side-by-side text editor stays smooth.
@@ -37,6 +45,10 @@ class MdViewProvider {
       if (e.document.uri.toString() !== document.uri.toString()) return;
       clearTimeout(timer);
       timer = setTimeout(push, 120);
+    });
+
+    const stateSub = panel.onDidChangeViewState(() => {
+      if (panel.active) this.outline.setActive({ uri: document.uri, toc, panel });
     });
 
     const msgSub = webview.onDidReceiveMessage(async (msg) => {
@@ -64,10 +76,13 @@ class MdViewProvider {
     panel.onDidDispose(() => {
       clearTimeout(timer);
       changeSub.dispose();
+      stateSub.dispose();
       msgSub.dispose();
+      this.outline.clearIf(document.uri);
     });
 
     push();
+    if (panel.active) this.outline.setActive({ uri: document.uri, toc, panel });
   }
 }
 
@@ -77,10 +92,16 @@ function activeUri() {
 }
 
 function activate(context) {
+  const outline = new OutlineTree();
+
   context.subscriptions.push(
-    vscode.window.registerCustomEditorProvider(VIEW_TYPE, new MdViewProvider(), {
+    vscode.window.registerCustomEditorProvider(VIEW_TYPE, new MdViewProvider(outline), {
       webviewOptions: { retainContextWhenHidden: true },
       supportsMultipleEditorsPerDocument: true,
+    }),
+    vscode.window.registerTreeDataProvider("mdview.outline", outline),
+    vscode.commands.registerCommand("mdview.revealHeading", (id) => {
+      if (outline.active) outline.active.panel.webview.postMessage({ type: "reveal", id });
     }),
     vscode.commands.registerCommand("mdview.openSource", async () => {
       const uri = activeUri();

@@ -2,7 +2,7 @@
   "name": "markdown-view",
   "displayName": "Markdown View",
   "description": "Read Markdown in a single pane with an outline sidebar — the file tab itself renders, instead of opening a second preview panel. Follows your editor theme.",
-  "version": "0.2.0",
+  "version": "0.3.1",
   "publisher": "tianlrz",
   "license": "MIT",
   "icon": "icon.png",
@@ -60,6 +60,11 @@
         "command": "mdview.openPreview",
         "title": "Markdown View: Open Rendered View",
         "icon": "$(book)"
+      },
+      {
+        "command": "mdview.revealHeading",
+        "title": "Go to Heading",
+        "category": "Markdown View"
       }
     ],
     "menus": {
@@ -71,6 +76,10 @@
         {
           "command": "mdview.openPreview",
           "when": "editorLangId == markdown"
+        },
+        {
+          "command": "mdview.revealHeading",
+          "when": "false"
         }
       ],
       "editor/title": [
@@ -83,6 +92,17 @@
           "command": "mdview.openPreview",
           "when": "editorLangId == markdown",
           "group": "navigation"
+        }
+      ]
+    },
+    "views": {
+      "explorer": [
+        {
+          "id": "mdview.outline",
+          "name": "Outline",
+          "contextualTitle": "Markdown",
+          "visibility": "visible",
+          "when": "activeCustomEditorId == mdview.editor"
         }
       ]
     }
@@ -99,5 +119,8 @@
     "@vscode/vsce": "^3.3.2",
     "esbuild": "^0.28.2",
     "ovsx": "^0.10.1"
-  }
+  },
+  "activationEvents": [
+    "onCustomEditor:mdview.editor"
+  ]
 }
